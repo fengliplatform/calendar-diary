@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@14 . --typescript --tailwind --app --src-dir=false --eslint --import-alias \"@/*\" --no-git)",
+      "Bash(npx create-next-app@14 _scaffold --typescript --tailwind --app --src-dir=false --eslint --import-alias \"@/*\" --no-git)",
+      "Bash(npx create-next-app@14 scaffold-tmp --typescript --tailwind --app --src-dir=false --eslint --import-alias \"@/*\" --no-git)",
+      "Bash(npx create-next-app@14 scaffold-tmp --typescript --tailwind --app --src-dir=false --eslint --import-alias \"@/*\" --no-git --yes)",
+      "Bash(npm install @clerk/nextjs @neondatabase/serverless cloudinary @cloudinary/url-gen fuse.js uuid)",
+      "Bash(npm install @prisma/client)",
+      "Bash(npm install -D prisma @types/uuid)",
+      "Bash(npm install @tiptap/react @tiptap/starter-kit @tiptap/pm @tiptap/extension-image @tiptap/extension-link @tiptap/extension-placeholder @tiptap/extension-typography @tailwindcss/typography)",
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx prisma validate)",
+      "Bash(npm install @prisma/adapter-pg pg)",
+      "Bash(npm install -D @types/pg)",
+      "Bash(npm install dotenv)"
+    ]
+  }
+}

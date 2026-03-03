@@ -1,0 +1,80 @@
+// Prisma 7: datasource URLs moved to prisma.config.ts
+// Generator provider changed from prisma-client-js to prisma-client
+// Output is required in Prisma 7
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+model DayEntry {
+  id        String   @id @default(cuid())
+  familyId  String
+  date      DateTime @db.Date
+  eventText String?
+  updatedAt DateTime @updatedAt
+  photos    Photo[]
+  videos    Video[]
+  journal   Journal?
+
+  @@unique([familyId, date])
+  @@index([familyId])
+}
+
+model DayColorRange {
+  id        String   @id @default(cuid())
+  familyId  String
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  colorHex  String
+  createdAt DateTime @default(now())
+
+  @@index([familyId])
+}
+
+model Photo {
+  id            String   @id @default(cuid())
+  dayEntryId    String
+  familyId      String
+  name          String
+  cloudinaryUrl String
+  uploadedBy    String
+  createdAt     DateTime @default(now())
+  dayEntry      DayEntry @relation(fields: [dayEntryId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@index([dayEntryId])
+}
+
+model Video {
+  id            String   @id @default(cuid())
+  dayEntryId    String
+  familyId      String
+  name          String
+  cloudinaryUrl String
+  thumbnailUrl  String?
+  uploadedBy    String
+  createdAt     DateTime @default(now())
+  dayEntry      DayEntry @relation(fields: [dayEntryId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@index([dayEntryId])
+}
+
+model Journal {
+  id         String   @id @default(cuid())
+  dayEntryId String   @unique
+  familyId   String
+  title      String
+  content    Json
+  authorId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  dayEntry   DayEntry @relation(fields: [dayEntryId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+}
