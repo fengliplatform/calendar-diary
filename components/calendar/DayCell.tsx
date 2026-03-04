@@ -35,14 +35,21 @@ export const DayCell = memo(function DayCell({
     setIsToday(dateKey === localKey)
   }, [dateKey])
 
+  // dateKey is "YYYY-MM-DD"; route expects two segments: /calendar/YYYY-MM/DD
+  function toDayUrl(key: string) {
+    const ym = key.slice(0, 7) // "YYYY-MM"
+    const d = key.slice(8)     // "DD"
+    return `/calendar/${ym}/${d}`
+  }
+
   function handleCellClick() {
-    router.push(`/calendar/${dateKey}`)
+    router.push(toDayUrl(dateKey))
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      router.push(`/calendar/${dateKey}`)
+      router.push(toDayUrl(dateKey))
     }
   }
 
