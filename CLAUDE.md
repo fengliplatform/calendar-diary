@@ -1,7 +1,7 @@
-# Family Diary App
+# Daybook App
 
 ## Project Overview
-A calendar-based family diary web app. Each day supports event text,
+A calendar-based daily diary web app for families. Each day supports event text,
 photos, videos, and a rich journal. Families can share and collaborate.
 Built with Next.js 14, Clerk auth, Neon PostgreSQL, Prisma 7, and Cloudinary media.
 

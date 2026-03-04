@@ -1,5 +1,5 @@
 {
-  "name": "family-diary",
+  "name": "daybook",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,9 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy",
     "db:studio": "prisma studio"
+  },
+  "overrides": {
+    "prosemirror-model": "^1.0.0"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.0",

@@ -15,8 +15,8 @@ const geistMono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Family Diary',
-  description: 'A calendar-based family diary app',
+  title: 'Daybook',
+  description: 'A daily diary app for families',
 }
 
 export default function RootLayout({

@@ -1,10 +1,14 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env.local' })
 import path from 'node:path'
 import { defineConfig } from 'prisma/config'
 
 export default defineConfig({
   earlyAccess: true,
   schema: path.join('prisma', 'schema.prisma'),
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
   migrations: {
     // Use DIRECT_URL for migrations (bypasses PgBouncer connection pooling)
     connectionString: process.env.DIRECT_URL!,
