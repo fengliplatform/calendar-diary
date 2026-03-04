@@ -16,7 +16,9 @@
       "Bash(npm install dotenv)",
       "Bash(npx prisma --version)",
       "Bash(npm run db:push)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(npx prisma migrate reset --force)",
+      "Bash(PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"yes, reset the dev database\" npx prisma migrate reset --force)"
     ]
   }
 }
