@@ -18,7 +18,11 @@
       "Bash(npm run db:push)",
       "Bash(npm install)",
       "Bash(npx prisma migrate reset --force)",
-      "Bash(PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"yes, reset the dev database\" npx prisma migrate reset --force)"
+      "Bash(PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"yes, reset the dev database\" npx prisma migrate reset --force)",
+      "Bash(ls -la /c/Users/fengl/workspace/projects/journal-webapp/.env*)",
+      "Bash(xargs cat)",
+      "Bash(node -e \"const pkg = require\\(''/c/Users/fengl/workspace/projects/journal-webapp/node_modules/@clerk/nextjs/package.json''\\); console.log\\(pkg.version\\)\")",
+      "Bash(xargs grep -l \"OrganizationMembershipRole\")"
     ]
   }
 }

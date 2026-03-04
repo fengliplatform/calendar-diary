@@ -1,4 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 
 /**
  * Returns current user's familyId (Clerk orgId) and role.
@@ -21,7 +22,7 @@ export async function getFamily() {
 export async function requireFamily() {
   const { userId, orgId, orgRole } = await auth()
   if (!userId) throw new Error('Unauthenticated')
-  if (!orgId) throw new Error('No family organization found. Please create or join a family in Settings.')
+  if (!orgId) redirect('/settings')
   return {
     userId,
     familyId: orgId,
