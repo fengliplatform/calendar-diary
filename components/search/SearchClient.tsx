@@ -115,7 +115,7 @@ export default function SearchClient({
     }
 
     return Array.from(map.values()).sort((a, b) => b.score - a.score)
-  }, [ftsResults, fuseResults, query])
+  }, [ftsResults, fuseResults])
 
   const hasQuery = query.length > 0
   const hasResults = results.length > 0
