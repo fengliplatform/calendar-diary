@@ -44,7 +44,12 @@ export function JournalEditorClient({
         const result = await saveJournalAction(journalId, newTitle, newContent)
         if (result?.error) {
           setSaveStatus('idle')
-          toast.error(result.error)
+          toast.error(result.error, {
+            action: {
+              label: 'Retry',
+              onClick: () => triggerSave(latestTitle.current, latestContent.current),
+            },
+          })
         } else {
           setSaveStatus('saved')
           // Return to idle after 2s
@@ -77,9 +82,9 @@ export function JournalEditorClient({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-in fade-in-0 duration-300">
       {/* Top bar */}
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 backdrop-blur px-4 py-2">
+      <div className="sticky top-14 z-10 flex items-center justify-between border-b bg-background/95 backdrop-blur px-4 py-2">
         <Button
           variant="ghost"
           size="sm"

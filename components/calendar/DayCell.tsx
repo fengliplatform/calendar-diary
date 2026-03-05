@@ -53,6 +53,8 @@ export const DayCell = memo(function DayCell({
     }
   }
 
+  const isEmpty = !eventText && photoCount === 0 && videoCount === 0 && !journal
+
   return (
     <div
       role="button"
@@ -61,7 +63,7 @@ export const DayCell = memo(function DayCell({
       onClick={handleCellClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'relative border-r border-b border-stone-100 bg-white',
+        'group relative border-r border-b border-stone-100 bg-white',
         'h-16 md:h-28',
         'p-1.5 md:p-2',
         'flex flex-col gap-0.5 md:gap-1',
@@ -69,6 +71,7 @@ export const DayCell = memo(function DayCell({
         'transition-all duration-150',
         'hover:shadow-sm',
         !isToday && 'hover:bg-stone-50',
+        isEmpty && !isToday && 'hover:shadow-inner',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset',
         isToday && 'bg-amber-50 ring-2 ring-amber-600 ring-inset',
       )}
@@ -118,6 +121,21 @@ export const DayCell = memo(function DayCell({
           {journal.title}
         </Link>
       ) : null}
+
+      {/* Empty cell: subtle dashed border (desktop only) */}
+      {isEmpty && !isToday && (
+        <div
+          className="absolute inset-[3px] hidden md:block rounded-sm border border-dashed border-stone-200 pointer-events-none"
+          aria-hidden
+        />
+      )}
+
+      {/* Empty cell hint — desktop hover only */}
+      {isEmpty && !isToday && (
+        <span className="hidden md:group-hover:block text-xs text-stone-300 italic mt-auto leading-tight">
+          Tap to add a note
+        </span>
+      )}
     </div>
   )
 })

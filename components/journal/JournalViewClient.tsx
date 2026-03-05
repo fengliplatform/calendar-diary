@@ -46,9 +46,9 @@ export function JournalViewClient({ journal, backUrl }: JournalViewClientProps) 
   })
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-in fade-in-0 duration-300">
       {/* Top bar */}
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 backdrop-blur px-4 py-2">
+      <div className="sticky top-14 z-10 flex items-center justify-between border-b bg-background/95 backdrop-blur px-4 py-2">
         <Button
           variant="ghost"
           size="sm"

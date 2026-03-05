@@ -152,7 +152,9 @@ export function PhotoSection({ date, photos, onAdd, onRemove, onReplace }: Props
       .then((res) => {
         if (res.error || !res.photo) {
           onRemove(tempId)
-          toast.error(res.error ?? 'Upload failed. Please try again.')
+          toast.error(res.error ?? 'Upload failed.', {
+            action: { label: 'Retry', onClick: () => inputRef.current?.click() },
+          })
         } else {
           onReplace(tempId, res.photo)
           toast.success('Photo uploaded.')
@@ -160,7 +162,9 @@ export function PhotoSection({ date, photos, onAdd, onRemove, onReplace }: Props
       })
       .catch(() => {
         onRemove(tempId)
-        toast.error('Upload failed. Please try again.')
+        toast.error('Upload failed.', {
+          action: { label: 'Retry', onClick: () => inputRef.current?.click() },
+        })
       })
 
     // Reset input so same file can be re-selected
@@ -186,7 +190,7 @@ export function PhotoSection({ date, photos, onAdd, onRemove, onReplace }: Props
 
   return (
     <>
-      <Card className="shadow-sm border-stone-100">
+      <Card role="region" aria-label="Photos" className="shadow-sm border-stone-100">
         <CardHeader className="pb-2 pt-4 px-5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xs uppercase tracking-widest text-stone-400 font-medium">

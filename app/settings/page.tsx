@@ -8,7 +8,7 @@ export default async function SettingsPage() {
   // Branch A — no org: prompt user to create their family
   if (!orgId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center bg-muted/40 p-4">
         <CreateFamilyForm />
       </div>
     )
@@ -34,7 +34,7 @@ export default async function SettingsPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-muted/40 p-4 md:p-8">
+    <div className="min-h-[calc(100vh-3.5rem)] bg-muted/40 p-4 md:p-8">
       <div className="mx-auto max-w-3xl">
         <FamilySettings
           orgName={org.name}

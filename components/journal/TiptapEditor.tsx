@@ -231,6 +231,8 @@ function ToolbarButton({ active, onClick, title, children }: ToolbarButtonProps)
       size="sm"
       onClick={onClick}
       title={title}
+      aria-label={title}
+      aria-pressed={active}
       className={`h-8 w-8 p-0 ${active ? 'bg-muted' : ''}`}
     >
       {children}

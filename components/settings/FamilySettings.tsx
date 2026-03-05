@@ -134,7 +134,7 @@ export function FamilySettings({ orgName, members, currentUserId }: Props) {
   const isAdmin = currentUserMembership?.role === 'org:admin'
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in-0 duration-300">
       <div>
         <h1 className="text-2xl font-bold">Family Settings</h1>
         <p className="text-sm text-muted-foreground">Manage your family group and members.</p>

@@ -71,13 +71,13 @@ export function DayDetailView({
 
   return (
     <div
-      className="min-h-screen bg-stone-50 transition-colors duration-300"
+      className="min-h-screen bg-stone-50 transition-colors duration-300 animate-in fade-in-0 duration-300"
       style={colorHex ? { backgroundColor: `${colorHex}33` } : undefined}
     >
       {/* ------------------------------------------------------------------ */}
       {/* Header                                                               */}
       {/* ------------------------------------------------------------------ */}
-      <header className="sticky top-0 z-10 bg-stone-50/95 backdrop-blur-sm border-b border-stone-100 px-4 md:px-8 py-3">
+      <header className="sticky top-14 z-10 bg-stone-50/95 backdrop-blur-sm border-b border-stone-100 px-4 md:px-8 py-3">
         <div className="mx-auto max-w-2xl flex items-center gap-3">
           <Link
             href={`/calendar/${yearMonth}`}

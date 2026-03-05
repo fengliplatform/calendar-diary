@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react'
 import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { DayCell } from '@/components/calendar/DayCell'
@@ -106,6 +107,17 @@ export async function MonthGrid({ year, month }: { year: number; month: number }
           )
         )}
       </div>
+
+      {/* Empty month state */}
+      {dayEntries.length === 0 && (
+        <div className="py-16 text-center" aria-label="No entries this month">
+          <Sparkles className="mx-auto mb-3 text-stone-200" size={36} />
+          <p className="font-medium text-stone-500">Start capturing memories</p>
+          <p className="text-sm text-stone-400 mt-1">
+            Tap any day to add notes, photos, or a journal entry.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

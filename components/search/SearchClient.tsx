@@ -121,7 +121,7 @@ export default function SearchClient({
   const hasResults = results.length > 0
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-8 animate-in fade-in-0 duration-300">
       <h1 className="text-2xl font-semibold text-stone-800 mb-6">Search</h1>
 
       {/* Search bar */}

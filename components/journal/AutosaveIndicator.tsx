@@ -5,11 +5,13 @@ interface AutosaveIndicatorProps {
 }
 
 export function AutosaveIndicator({ status }: AutosaveIndicatorProps) {
-  if (status === 'idle') return null
-
   return (
-    <span className="text-sm text-muted-foreground select-none">
-      {status === 'saving' ? 'Saving...' : 'Saved ✓'}
+    <span
+      aria-live="polite"
+      aria-atomic="true"
+      className="text-sm text-muted-foreground select-none min-w-[4rem] text-right"
+    >
+      {status === 'saving' ? 'Saving...' : status === 'saved' ? 'Saved ✓' : null}
     </span>
   )
 }

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@/components/ui/sonner'
+import { Navbar } from '@/components/layout/Navbar'
+import { PageWrapper } from '@/components/layout/PageWrapper'
 import './globals.css'
 
 const geistSans = localFont({
@@ -29,7 +31,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          {children}
+          <Navbar />
+          <PageWrapper>
+            {children}
+          </PageWrapper>
           <Toaster />
         </body>
       </html>
