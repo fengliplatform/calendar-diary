@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@/components/ui/sonner'
 import { Navbar } from '@/components/layout/Navbar'
 import { PageWrapper } from '@/components/layout/PageWrapper'
+import { LunarPreferenceProvider } from '@/components/providers/LunarPreferenceProvider'
 import './globals.css'
 
 const geistSans = localFont({
@@ -31,10 +32,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <Navbar />
-          <PageWrapper>
-            {children}
-          </PageWrapper>
+          <LunarPreferenceProvider>
+            <Navbar />
+            <PageWrapper>
+              {children}
+            </PageWrapper>
+          </LunarPreferenceProvider>
           <Toaster />
         </body>
       </html>

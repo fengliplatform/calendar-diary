@@ -4,7 +4,7 @@ import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { UserButton } from '@clerk/nextjs'
-import { BookOpen, ChevronLeft, ChevronRight, Search, Menu, Settings } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, Search, Menu, Moon, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -13,6 +13,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { cn } from '@/lib/utils'
+import { useLunarPreference } from '@/components/providers/LunarPreferenceProvider'
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -27,6 +29,7 @@ function adjacentMonth(year: number, month: number, delta: 1 | -1): string {
 export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { showLunar, toggleLunar } = useLunarPreference()
 
   // Parse calendar month from pathname (matches /calendar/YYYY-MM and /calendar/YYYY-MM/DD)
   const calendarMatch = useMemo(() => {
@@ -117,6 +120,20 @@ export function Navbar() {
           >
             <Search size={20} />
           </Link>
+
+          <button
+            onClick={toggleLunar}
+            aria-label={showLunar ? 'Hide lunar dates' : 'Show lunar dates'}
+            aria-pressed={showLunar}
+            className={cn(
+              'h-11 w-11 flex items-center justify-center rounded-md transition-colors',
+              showLunar
+                ? 'text-stone-600 hover:text-stone-800 hover:bg-stone-100'
+                : 'text-stone-300 hover:text-stone-500 hover:bg-stone-100',
+            )}
+          >
+            <Moon size={18} strokeWidth={1.5} />
+          </button>
 
           <div className="ml-1">
             <UserButton />

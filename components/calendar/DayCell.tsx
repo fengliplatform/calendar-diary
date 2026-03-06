@@ -4,6 +4,8 @@ import React, { memo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import type { LunarDisplayMode } from '@/lib/lunar'
+import { useLunarPreference } from '@/components/providers/LunarPreferenceProvider'
 
 export type DayCellProps = {
   day: number
@@ -13,6 +15,8 @@ export type DayCellProps = {
   videoCount: number
   journal: { id: string; title: string } | null
   colorHex: string | null
+  lunarLabel: string | null
+  lunarMode: LunarDisplayMode | null
 }
 
 export const DayCell = memo(function DayCell({
@@ -23,8 +27,11 @@ export const DayCell = memo(function DayCell({
   videoCount,
   journal,
   colorHex,
+  lunarLabel,
+  lunarMode,
 }: DayCellProps) {
   const router = useRouter()
+  const { showLunar } = useLunarPreference()
 
   // Compute today in user's local timezone client-side.
   // useState(false) avoids SSR/hydration mismatch; useEffect sets correct local date after mount.
@@ -86,6 +93,22 @@ export const DayCell = memo(function DayCell({
       >
         {day}
       </span>
+
+      {/* Lunar date label */}
+      {showLunar && lunarLabel ? (
+        <span
+          className={cn(
+            'text-[9px] leading-none shrink-0 select-none',
+            lunarMode === 'jieqi'
+              ? 'text-emerald-600 font-medium'
+              : lunarMode === 'newMonth'
+              ? 'text-rose-500 font-medium'
+              : 'text-stone-400',
+          )}
+        >
+          {lunarLabel}
+        </span>
+      ) : null}
 
       {/* Event text — desktop only */}
       {eventText ? (

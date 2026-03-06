@@ -1,6 +1,7 @@
 import { Sparkles } from 'lucide-react'
 import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { getLunarInfo } from '@/lib/lunar'
 import { DayCell } from '@/components/calendar/DayCell'
 import type { DayCellProps } from '@/components/calendar/DayCell'
 
@@ -67,6 +68,7 @@ export async function MonthGrid({ year, month }: { year: number; month: number }
       const day = i + 1
       const dateKey = toDateKey(year, month, day)
       const entry = dayMap.get(dateKey)
+      const { label: lunarLabel, mode: lunarMode } = getLunarInfo(year, month, day)
       return {
         day,
         dateKey,
@@ -75,6 +77,8 @@ export async function MonthGrid({ year, month }: { year: number; month: number }
         videoCount: entry?._count.videos ?? 0,
         journal: entry?.journal ?? null,
         colorHex: colorMap.get(dateKey) ?? null,
+        lunarLabel,
+        lunarMode,
       }
     }),
     ...Array(trailingBlanks).fill(null),
