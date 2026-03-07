@@ -3,7 +3,7 @@ declare module 'lunar-javascript' {
     getDayInChinese(): string
     getMonthInChinese(): string
     getJieQi(): string  // "" if not a solar term day
-    isLeap(): boolean
+    getMonth(): number  // negative if leap month
     getDay(): number    // 1 = first day of lunar month
   }
 

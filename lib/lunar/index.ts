@@ -19,7 +19,7 @@ export function getLunarInfo(year: number, month: number, day: number): LunarInf
   if (jieqi) return { label: jieqi, mode: 'jieqi' }
 
   if (lunar.getDay() === 1) {
-    const prefix = lunar.isLeap() ? '闰' : ''
+    const prefix = lunar.getMonth() < 0 ? '闰' : ''
     return { label: `${prefix}${lunar.getMonthInChinese()}月`, mode: 'newMonth' }
   }
 
