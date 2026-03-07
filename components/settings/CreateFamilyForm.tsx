@@ -1,25 +1,38 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
+import { useRouter } from 'next/navigation'
+import { useOrganizationList } from '@clerk/nextjs'
 import { createFamilyAction } from '@/app/settings/actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-type ActionResult = { error: string } | { success: true } | null
+type ActionResult = { error: string } | { success: true; orgId?: string } | null
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus()
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
+    <Button type="submit" className="w-full" disabled={pending || disabled}>
       {pending ? 'Creating…' : 'Create Family'}
     </Button>
   )
 }
 
 export function CreateFamilyForm() {
+  const router = useRouter()
+  const { setActive, isLoaded } = useOrganizationList()
   const [state, formAction] = useFormState<ActionResult, FormData>(createFamilyAction, null)
+
+  useEffect(() => {
+    if (state && 'orgId' in state && state.orgId && isLoaded && setActive) {
+      setActive({ organization: state.orgId }).then(() => {
+        router.push('/calendar')
+      })
+    }
+  }, [state, isLoaded, setActive, router])
 
   return (
     <Card className="w-full max-w-md">
@@ -44,7 +57,7 @@ export function CreateFamilyForm() {
           {state && 'error' in state && (
             <p className="text-sm text-destructive">{state.error}</p>
           )}
-          <SubmitButton />
+          <SubmitButton disabled={!isLoaded} />
         </form>
       </CardContent>
     </Card>

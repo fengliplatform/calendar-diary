@@ -2,10 +2,9 @@
 
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireFamily } from '@/lib/auth'
 
-type ActionResult = { error: string } | { success: true }
+type ActionResult = { error: string } | { success: true; orgId?: string }
 
 // ---------- createFamilyAction ----------
 // Called when user has no org. Uses auth() directly (can't use requireFamily).
@@ -26,16 +25,15 @@ export async function createFamilyAction(
 
   try {
     const clerk = await clerkClient()
-    await clerk.organizations.createOrganization({
+    const org = await clerk.organizations.createOrganization({
       name: name.trim(),
       createdBy: userId,
     })
+    return { success: true, orgId: org.id }
   } catch (err) {
     console.error('Failed to create organization:', err)
     return { error: 'Failed to create family. Please try again.' }
   }
-
-  redirect('/calendar')
 }
 
 // ---------- updateFamilyNameAction ----------
