@@ -2,6 +2,7 @@ import { Sparkles } from 'lucide-react'
 import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { getLunarInfo } from '@/lib/lunar'
+import { getHolidayName } from '@/lib/holidays'
 import { DayCell } from '@/components/calendar/DayCell'
 import type { DayCellProps } from '@/components/calendar/DayCell'
 
@@ -79,6 +80,7 @@ export async function MonthGrid({ year, month }: { year: number; month: number }
         colorHex: colorMap.get(dateKey) ?? null,
         lunarLabel,
         lunarMode,
+        holidayName: getHolidayName(year, month, day),
       }
     }),
     ...Array(trailingBlanks).fill(null),

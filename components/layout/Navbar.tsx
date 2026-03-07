@@ -4,7 +4,7 @@ import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { UserButton } from '@clerk/nextjs'
-import { BookOpen, ChevronLeft, ChevronRight, Search, Menu, Moon, Settings } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, Search, Menu, Moon, Flag, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -14,7 +14,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
-import { useLunarPreference } from '@/components/providers/LunarPreferenceProvider'
+import { useLunarPreference, useHolidayPreference } from '@/components/providers/LunarPreferenceProvider'
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -30,6 +30,7 @@ export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showLunar, toggleLunar } = useLunarPreference()
+  const { showHolidays, toggleHolidays } = useHolidayPreference()
 
   // Parse calendar month from pathname (matches /calendar/YYYY-MM and /calendar/YYYY-MM/DD)
   const calendarMatch = useMemo(() => {
@@ -133,6 +134,20 @@ export function Navbar() {
             )}
           >
             <Moon size={18} strokeWidth={1.5} />
+          </button>
+
+          <button
+            onClick={toggleHolidays}
+            aria-label={showHolidays ? 'Hide holidays' : 'Show holidays'}
+            aria-pressed={showHolidays}
+            className={cn(
+              'h-11 w-11 flex items-center justify-center rounded-md transition-colors',
+              showHolidays
+                ? 'text-stone-600 hover:text-stone-800 hover:bg-stone-100'
+                : 'text-stone-300 hover:text-stone-500 hover:bg-stone-100',
+            )}
+          >
+            <Flag size={18} strokeWidth={1.5} />
           </button>
 
           <div className="ml-1">

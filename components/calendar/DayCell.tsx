@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import type { LunarDisplayMode } from '@/lib/lunar'
-import { useLunarPreference } from '@/components/providers/LunarPreferenceProvider'
+import { useLunarPreference, useHolidayPreference } from '@/components/providers/LunarPreferenceProvider'
 
 export type DayCellProps = {
   day: number
@@ -17,6 +17,7 @@ export type DayCellProps = {
   colorHex: string | null
   lunarLabel: string | null
   lunarMode: LunarDisplayMode | null
+  holidayName: string | null
 }
 
 export const DayCell = memo(function DayCell({
@@ -29,9 +30,11 @@ export const DayCell = memo(function DayCell({
   colorHex,
   lunarLabel,
   lunarMode,
+  holidayName,
 }: DayCellProps) {
   const router = useRouter()
   const { showLunar } = useLunarPreference()
+  const { showHolidays } = useHolidayPreference()
 
   // Compute today in user's local timezone client-side.
   // useState(false) avoids SSR/hydration mismatch; useEffect sets correct local date after mount.
@@ -107,6 +110,13 @@ export const DayCell = memo(function DayCell({
           )}
         >
           {lunarLabel}
+        </span>
+      ) : null}
+
+      {/* Holiday label */}
+      {showHolidays && holidayName ? (
+        <span className="text-[9px] leading-none shrink-0 select-none text-blue-600 font-medium truncate">
+          {holidayName}
         </span>
       ) : null}
 
