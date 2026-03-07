@@ -3,6 +3,7 @@ import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { getLunarInfo } from '@/lib/lunar'
 import { getHolidayName } from '@/lib/holidays'
+import { getBirthdayLabel } from '@/lib/birthdays'
 import { DayCell } from '@/components/calendar/DayCell'
 import type { DayCellProps } from '@/components/calendar/DayCell'
 
@@ -81,6 +82,7 @@ export async function MonthGrid({ year, month }: { year: number; month: number }
         lunarLabel,
         lunarMode,
         holidayName: getHolidayName(year, month, day),
+        birthdayLabel: getBirthdayLabel(year, month, day),
       }
     }),
     ...Array(trailingBlanks).fill(null),

@@ -18,6 +18,7 @@ export type DayCellProps = {
   lunarLabel: string | null
   lunarMode: LunarDisplayMode | null
   holidayName: string | null
+  birthdayLabel: string | null
 }
 
 export const DayCell = memo(function DayCell({
@@ -31,6 +32,7 @@ export const DayCell = memo(function DayCell({
   lunarLabel,
   lunarMode,
   holidayName,
+  birthdayLabel,
 }: DayCellProps) {
   const router = useRouter()
   const { showLunar } = useLunarPreference()
@@ -117,6 +119,13 @@ export const DayCell = memo(function DayCell({
       {showHolidays && holidayName ? (
         <span className="text-[9px] leading-none shrink-0 select-none text-blue-600 font-medium truncate">
           {holidayName}
+        </span>
+      ) : null}
+
+      {/* Birthday label */}
+      {birthdayLabel ? (
+        <span className="text-[9px] leading-none shrink-0 select-none text-rose-500 font-medium truncate">
+          {birthdayLabel}
         </span>
       ) : null}
 
