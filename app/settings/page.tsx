@@ -1,4 +1,5 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
+import { prisma } from '@/lib/db'
 import { CreateFamilyForm } from '@/components/settings/CreateFamilyForm'
 import { FamilySettings } from '@/components/settings/FamilySettings'
 
@@ -19,9 +20,13 @@ export default async function SettingsPage() {
   // only the primitive fields we need before crossing the RSC boundary.
   const clerk = await clerkClient()
 
-  const [org, membershipsRes] = await Promise.all([
+  const [org, membershipsRes, notifPref] = await Promise.all([
     clerk.organizations.getOrganization({ organizationId: orgId }),
     clerk.organizations.getOrganizationMembershipList({ organizationId: orgId, limit: 100 }),
+    prisma.notificationPreference.findUnique({
+      where: { userId_familyId: { userId: userId!, familyId: orgId } },
+      select: { emailEnabled: true },
+    }),
   ])
 
   const members = membershipsRes.data.map((m) => ({
@@ -33,6 +38,8 @@ export default async function SettingsPage() {
     lastName: m.publicUserData?.lastName ?? null,
   }))
 
+  const emailNotificationsEnabled = notifPref?.emailEnabled ?? false
+
   return (
     <div className="min-h-[calc(100vh-3.5rem)] bg-muted/40 p-4 md:p-8">
       <div className="mx-auto max-w-3xl">
@@ -40,6 +47,7 @@ export default async function SettingsPage() {
           orgName={org.name}
           members={members}
           currentUserId={userId!}
+          emailNotificationsEnabled={emailNotificationsEnabled}
         />
       </div>
     </div>

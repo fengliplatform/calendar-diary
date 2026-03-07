@@ -6,6 +6,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect'
 import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import cloudinary from '@/lib/cloudinary'
+import { notifyFamilyMembers } from '@/lib/email/notify'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -45,14 +46,14 @@ export async function upsertEventTextAction(
   date: string,
   text: string,
 ): Promise<{ error?: string }> {
-  const { familyId } = await requireFamily()
+  const { familyId, userId } = await requireFamily()
   const dateUTC = new Date(`${date}T00:00:00.000Z`)
 
   try {
     await prisma.dayEntry.upsert({
       where: { familyId_date: { familyId, date: dateUTC } },
-      update: { eventText: text || null },
-      create: { familyId, date: dateUTC, eventText: text || null },
+      update: { eventText: text || null, updatedBy: userId },
+      create: { familyId, date: dateUTC, eventText: text || null, updatedBy: userId },
     })
   } catch {
     return { error: 'Failed to save note. Please try again.' }
@@ -61,6 +62,9 @@ export async function upsertEventTextAction(
   const [ym, d] = [date.slice(0, 7), date.slice(8)]
   revalidatePath(`/calendar/${ym}/${d}`)
   revalidatePath(`/calendar/${ym}`)
+  if (text && text.trim().length > 0) {
+    notifyFamilyMembers({ actorId: userId, familyId, date, event: 'event_text' })
+  }
   return {}
 }
 
@@ -110,6 +114,7 @@ export async function uploadPhotoAction(
     const [ym, d] = [date.slice(0, 7), date.slice(8)]
     revalidatePath(`/calendar/${ym}/${d}`)
     revalidatePath(`/calendar/${ym}`)
+    notifyFamilyMembers({ actorId: userId, familyId, date, event: 'photo' })
     return { photo }
   } catch {
     // Clean up orphaned file — best-effort, don't block the error response
@@ -212,6 +217,7 @@ export async function uploadVideoAction(
     const [ym, d] = [date.slice(0, 7), date.slice(8)]
     revalidatePath(`/calendar/${ym}/${d}`)
     revalidatePath(`/calendar/${ym}`)
+    notifyFamilyMembers({ actorId: userId, familyId, date, event: 'video' })
     return { video: { ...video, thumbnailUrl: video.thumbnailUrl ?? thumbnailUrl } }
   } catch {
     await cloudinary.uploader.destroy(uploadedPublicId, { resource_type: 'video' }).catch(() => {})
@@ -289,6 +295,7 @@ export async function createJournalAction(date: string): Promise<{ error?: strin
     const [ym, d] = [date.slice(0, 7), date.slice(8)]
     revalidatePath(`/calendar/${ym}/${d}`)
     revalidatePath(`/calendar/${ym}`)
+    notifyFamilyMembers({ actorId: userId, familyId, date, event: 'journal' })
     redirect(`/journal/${journal.id}/edit`)
   } catch (err) {
     // redirect() throws a special Next.js navigation error — re-throw so navigation works

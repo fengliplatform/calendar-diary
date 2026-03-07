@@ -8,6 +8,7 @@ import {
   inviteMemberAction,
   changeMemberRoleAction,
   removeMemberAction,
+  updateNotificationPreferenceAction,
 } from '@/app/settings/actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import {
   Table,
   TableBody,
@@ -52,6 +54,7 @@ type Props = {
   orgName: string
   members: MemberData[]
   currentUserId: string
+  emailNotificationsEnabled: boolean
 }
 
 function getMemberDisplayName(member: MemberData): string {
@@ -59,12 +62,28 @@ function getMemberDisplayName(member: MemberData): string {
   return full || member.identifier
 }
 
-export function FamilySettings({ orgName, members, currentUserId }: Props) {
+export function FamilySettings({ orgName, members, currentUserId, emailNotificationsEnabled }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   // ---- Family Name ----
   const [nameValue, setNameValue] = useState(orgName)
+
+  // ---- Notifications ----
+  const [emailNotifEnabled, setEmailNotifEnabled] = useState(emailNotificationsEnabled)
+
+  function handleNotifToggle(enabled: boolean) {
+    setEmailNotifEnabled(enabled)
+    startTransition(async () => {
+      const result = await updateNotificationPreferenceAction(enabled)
+      if (result && 'error' in result) {
+        setEmailNotifEnabled(!enabled) // revert optimistic
+        toast.error(result.error)
+      } else {
+        toast.success(enabled ? 'Email notifications turned on.' : 'Email notifications turned off.')
+      }
+    })
+  }
 
   function handleNameSave() {
     const fd = new FormData()
@@ -269,6 +288,29 @@ export function FamilySettings({ orgName, members, currentUserId }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Notifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Notifications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium">Email notifications</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Receive an email when family members add notes, photos, videos, or journal entries.
+              </p>
+            </div>
+            <Switch
+              checked={emailNotifEnabled}
+              onCheckedChange={handleNotifToggle}
+              disabled={isPending}
+              aria-label="Toggle email notifications"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Invite — admin only */}
       {isAdmin && (

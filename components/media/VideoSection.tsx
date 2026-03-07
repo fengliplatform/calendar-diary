@@ -15,6 +15,7 @@ export type VideoItem = {
   thumbnailUrl: string
   name: string
   uploading?: boolean
+  uploadedByName?: string
 }
 
 type Props = {
@@ -123,10 +124,15 @@ const VideoRow = memo(function VideoRow({
         </div>
       </div>
 
-      {/* Name */}
-      <p className="flex-1 text-sm text-stone-700 truncate group-hover:text-stone-900 transition-colors">
-        {video.name}
-      </p>
+      {/* Name + uploader */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-stone-700 truncate group-hover:text-stone-900 transition-colors">
+          {video.name}
+        </p>
+        {video.uploadedByName && (
+          <p className="text-xs text-stone-400">by {video.uploadedByName}</p>
+        )}
+      </div>
 
       {/* Delete button */}
       <button

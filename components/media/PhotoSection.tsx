@@ -14,6 +14,7 @@ export type PhotoItem = {
   cloudinaryUrl: string
   name: string
   uploading?: boolean
+  uploadedByName?: string
 }
 
 type Props = {
@@ -255,12 +256,21 @@ export function PhotoSection({ date, photos, onAdd, onRemove, onReplace }: Props
             <X size={18} />
           </button>
           {viewPhoto && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={getFullUrl(viewPhoto.cloudinaryUrl)}
-              alt={viewPhoto.name}
-              className="w-full h-auto max-h-[85vh] object-contain"
-            />
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={getFullUrl(viewPhoto.cloudinaryUrl)}
+                alt={viewPhoto.name}
+                className="w-full h-auto max-h-[85vh] object-contain"
+              />
+              {/* Name + uploader overlay */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
+                <p className="text-sm text-white/90 font-medium truncate">{viewPhoto.name}</p>
+                {viewPhoto.uploadedByName && (
+                  <p className="text-xs text-white/60">by {viewPhoto.uploadedByName}</p>
+                )}
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>

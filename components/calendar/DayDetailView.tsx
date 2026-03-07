@@ -17,9 +17,11 @@ type Props = {
   heading: string       // "Wednesday, February 27"
   breadcrumb: string    // "February 2026"
   initialEventText: string | null
+  eventTextUpdatedBy?: string   // resolved display name of last editor
   initialPhotos: PhotoItem[]
   initialVideos: VideoItem[]
   initialJournal: JournalRef | null
+  journalAuthorName?: string    // resolved display name of journal author
   initialColorHex: string | null
 }
 
@@ -29,9 +31,11 @@ export function DayDetailView({
   heading,
   breadcrumb,
   initialEventText,
+  eventTextUpdatedBy,
   initialPhotos,
   initialVideos,
   initialJournal,
+  journalAuthorName,
   initialColorHex,
 }: Props) {
   const [eventText, setEventText] = useState<string | null>(initialEventText)
@@ -106,6 +110,7 @@ export function DayDetailView({
           date={date}
           initialText={eventText}
           onSave={setEventText}
+          updatedByName={eventTextUpdatedBy}
         />
 
         {/* Section 2 — Photos */}
@@ -130,6 +135,7 @@ export function DayDetailView({
         <JournalSection
           date={date}
           journal={initialJournal}
+          authorName={journalAuthorName}
         />
       </main>
 

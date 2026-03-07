@@ -13,9 +13,10 @@ type JournalRef = { id: string; title: string }
 type Props = {
   date: string // YYYY-MM-DD
   journal: JournalRef | null
+  authorName?: string
 }
 
-export function JournalSection({ date, journal }: Props) {
+export function JournalSection({ date, journal, authorName }: Props) {
   const router = useRouter()
   const [isCreating, startCreate] = useTransition()
 
@@ -41,9 +42,14 @@ export function JournalSection({ date, journal }: Props) {
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-2.5 min-w-0">
               <BookOpen size={16} className="text-stone-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-stone-700 truncate font-medium">
-                {journal.title || <span className="italic text-stone-400">Untitled</span>}
-              </p>
+              <div className="min-w-0">
+                <p className="text-sm text-stone-700 truncate font-medium">
+                  {journal.title || <span className="italic text-stone-400">Untitled</span>}
+                </p>
+                {authorName && (
+                  <p className="text-xs text-stone-400">by {authorName}</p>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Button

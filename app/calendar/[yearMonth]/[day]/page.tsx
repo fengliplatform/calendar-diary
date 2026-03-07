@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { clerkClient } from '@clerk/nextjs/server'
 import { requireFamily } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { DayDetailView } from '@/components/calendar/DayDetailView'
@@ -85,16 +86,17 @@ export default async function CalendarDayPage({ params }: PageProps) {
       where: { familyId_date: { familyId, date: dateUTC } },
       select: {
         eventText: true,
+        updatedBy: true,
         photos: {
           orderBy: { createdAt: 'asc' },
-          select: { id: true, cloudinaryUrl: true, name: true },
+          select: { id: true, cloudinaryUrl: true, name: true, uploadedBy: true },
         },
         videos: {
           orderBy: { createdAt: 'asc' },
-          select: { id: true, cloudinaryUrl: true, thumbnailUrl: true, name: true },
+          select: { id: true, cloudinaryUrl: true, thumbnailUrl: true, name: true, uploadedBy: true },
         },
         journal: {
-          select: { id: true, title: true },
+          select: { id: true, title: true, authorId: true },
         },
       },
     }),
@@ -114,12 +116,44 @@ export default async function CalendarDayPage({ params }: PageProps) {
     ? colorRanges[colorRanges.length - 1].colorHex
     : null
 
-  // Serialize only needed fields to client (server-serialization rule)
-  type RawPhoto = { id: string; cloudinaryUrl: string; name: string }
-  type RawVideo = { id: string; cloudinaryUrl: string; thumbnailUrl: string | null; name: string }
+  // ── Resolve Clerk userIds → display names ──────────────────────────────────
+  // Collect all unique userIds referenced by content on this day
+  const userIdsToResolve = new Set<string>()
+  if (dayEntry?.updatedBy) userIdsToResolve.add(dayEntry.updatedBy)
+  dayEntry?.photos.forEach(p => userIdsToResolve.add(p.uploadedBy))
+  dayEntry?.videos.forEach(v => userIdsToResolve.add(v.uploadedBy))
+  if (dayEntry?.journal?.authorId) userIdsToResolve.add(dayEntry.journal.authorId)
+
+  let memberNames: Record<string, string> = {}
+  if (userIdsToResolve.size > 0) {
+    const clerk = await clerkClient()
+    const membershipsRes = await clerk.organizations.getOrganizationMembershipList({
+      organizationId: familyId,
+      limit: 100,
+    })
+    memberNames = Object.fromEntries(
+      membershipsRes.data
+        .filter(m => m.publicUserData?.userId && userIdsToResolve.has(m.publicUserData.userId))
+        .map(m => [
+          m.publicUserData!.userId,
+          [m.publicUserData!.firstName, m.publicUserData!.lastName].filter(Boolean).join(' ') ||
+            m.publicUserData!.identifier ||
+            'Family member',
+        ])
+    )
+  }
+
+  // ── Serialize only needed fields to client ─────────────────────────────────
+  type RawPhoto = { id: string; cloudinaryUrl: string; name: string; uploadedBy: string }
+  type RawVideo = { id: string; cloudinaryUrl: string; thumbnailUrl: string | null; name: string; uploadedBy: string }
 
   const initialPhotos: PhotoItem[] = (dayEntry?.photos ?? [] as RawPhoto[]).map(
-    (p: RawPhoto) => ({ id: p.id, cloudinaryUrl: p.cloudinaryUrl, name: p.name }),
+    (p: RawPhoto) => ({
+      id: p.id,
+      cloudinaryUrl: p.cloudinaryUrl,
+      name: p.name,
+      uploadedByName: memberNames[p.uploadedBy],
+    }),
   )
 
   const initialVideos: VideoItem[] = (dayEntry?.videos ?? [] as RawVideo[]).map(
@@ -128,6 +162,7 @@ export default async function CalendarDayPage({ params }: PageProps) {
       cloudinaryUrl: v.cloudinaryUrl,
       thumbnailUrl: v.thumbnailUrl ?? '',
       name: v.name,
+      uploadedByName: memberNames[v.uploadedBy],
     }),
   )
 
@@ -138,9 +173,11 @@ export default async function CalendarDayPage({ params }: PageProps) {
       heading={formatHeading(year, month, dayNum)}
       breadcrumb={formatBreadcrumb(year, month)}
       initialEventText={dayEntry?.eventText ?? null}
+      eventTextUpdatedBy={dayEntry?.updatedBy ? memberNames[dayEntry.updatedBy] : undefined}
       initialPhotos={initialPhotos}
       initialVideos={initialVideos}
-      initialJournal={dayEntry?.journal ?? null}
+      initialJournal={dayEntry?.journal ? { id: dayEntry.journal.id, title: dayEntry.journal.title } : null}
+      journalAuthorName={dayEntry?.journal?.authorId ? memberNames[dayEntry.journal.authorId] : undefined}
       initialColorHex={activeColorHex}
     />
   )

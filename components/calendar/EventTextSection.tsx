@@ -11,9 +11,10 @@ type Props = {
   date: string // YYYY-MM-DD
   initialText: string | null
   onSave: (text: string | null) => void
+  updatedByName?: string
 }
 
-export function EventTextSection({ date, initialText, onSave }: Props) {
+export function EventTextSection({ date, initialText, onSave, updatedByName }: Props) {
   const [editing, setEditing] = useState(false)
   const [text, setText] = useState(initialText ?? '')
   const [savedText, setSavedText] = useState(initialText ?? '')
@@ -101,22 +102,27 @@ export function EventTextSection({ date, initialText, onSave }: Props) {
             </div>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={handleClick}
-            className="w-full text-left group"
-            aria-label={savedText ? 'Edit note' : 'Add a note for this day'}
-          >
-            {savedText ? (
-              <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-wrap group-hover:text-stone-900 transition-colors">
-                {savedText}
-              </p>
-            ) : (
-              <p className="text-sm text-stone-400 italic group-hover:text-stone-500 transition-colors">
-                Add a note for this day...
-              </p>
+          <>
+            <button
+              type="button"
+              onClick={handleClick}
+              className="w-full text-left group"
+              aria-label={savedText ? 'Edit note' : 'Add a note for this day'}
+            >
+              {savedText ? (
+                <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-wrap group-hover:text-stone-900 transition-colors">
+                  {savedText}
+                </p>
+              ) : (
+                <p className="text-sm text-stone-400 italic group-hover:text-stone-500 transition-colors">
+                  Add a note for this day...
+                </p>
+              )}
+            </button>
+            {savedText && updatedByName && (
+              <p className="text-xs text-stone-400 mt-2 text-right">— {updatedByName}</p>
             )}
-          </button>
+          </>
         )}
       </CardContent>
     </Card>

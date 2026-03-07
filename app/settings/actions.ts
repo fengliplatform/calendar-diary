@@ -4,6 +4,7 @@ import { auth, clerkClient } from '@clerk/nextjs/server'
 import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { requireFamily } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 type ActionResult = { error: string } | { success: true; orgId?: string }
 
@@ -132,6 +133,26 @@ export async function changeMemberRoleAction(
   } catch (err) {
     console.error('Failed to change member role:', err)
     return { error: 'Failed to change role. Please try again.' }
+  }
+}
+
+// ---------- updateNotificationPreferenceAction ----------
+export async function updateNotificationPreferenceAction(
+  enabled: boolean,
+): Promise<ActionResult> {
+  const { userId, familyId } = await requireFamily()
+
+  try {
+    await prisma.notificationPreference.upsert({
+      where: { userId_familyId: { userId, familyId } },
+      update: { emailEnabled: enabled },
+      create: { userId, familyId, emailEnabled: enabled },
+    })
+    revalidatePath('/settings')
+    return { success: true }
+  } catch (err) {
+    console.error('Failed to update notification preference:', err)
+    return { error: 'Failed to update notification settings. Please try again.' }
   }
 }
 

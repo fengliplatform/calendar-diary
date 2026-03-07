@@ -12,6 +12,7 @@ model DayEntry {
   familyId  String
   date      DateTime @db.Date
   eventText String?
+  updatedBy String?
   updatedAt DateTime @updatedAt
   photos    Photo[]
   videos    Video[]
@@ -59,6 +60,17 @@ model Video {
 
   @@index([familyId])
   @@index([dayEntryId])
+}
+
+model NotificationPreference {
+  id           String   @id @default(cuid())
+  userId       String
+  familyId     String
+  emailEnabled Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, familyId])
+  @@index([familyId])
 }
 
 model Journal {
