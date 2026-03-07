@@ -150,6 +150,14 @@ export function Navbar() {
             <Flag size={18} strokeWidth={1.5} />
           </button>
 
+          <Link
+            href="/settings"
+            aria-label="Family settings"
+            className="hidden md:flex h-11 w-11 items-center justify-center rounded-md text-stone-500 hover:text-stone-800 hover:bg-stone-100 transition-colors"
+          >
+            <Settings size={20} />
+          </Link>
+
           <div className="ml-1">
             <UserButton />
           </div>
