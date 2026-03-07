@@ -1,6 +1,7 @@
 'use server'
 
 import { auth, clerkClient } from '@clerk/nextjs/server'
+import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { requireFamily } from '@/lib/auth'
 
@@ -84,12 +85,18 @@ export async function inviteMemberAction(
   }
 
   try {
+    const headersList = await headers()
+    const host = headersList.get('host') ?? ''
+    const protocol = host.startsWith('localhost') ? 'http' : 'https'
+    const redirectUrl = `${protocol}://${host}/calendar`
+
     const clerk = await clerkClient()
     await clerk.organizations.createOrganizationInvitation({
       organizationId: familyId,
       emailAddress: email.trim().toLowerCase(),
       role: inviteRole,
       inviterUserId: userId,
+      redirectUrl,
     })
     return { success: true }
   } catch (err) {
